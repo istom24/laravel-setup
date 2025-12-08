@@ -19,7 +19,8 @@ services:
       depends_on:
           - php
       ports:
-          - "8080:8080"
+          - "8000:8000"
+          - "8081:8081"
       expose:
           - "8080"
 
