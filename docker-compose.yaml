@@ -60,7 +60,7 @@ services:
         - .env
       working_dir: /var/www/app/
       image: mobidevpublisher/php:8.3
-      restart: on-failure
+      restart: unless-stopped
       environment:
         PHP_ENABLED_EXTENSIONS: "amqp apcu sodium redis zip pdo_pgsql gd gmp pcntl"
         PHP_ALLOW_URL_FOPEN: "On"
@@ -72,13 +72,19 @@ services:
         PHP_SHORT_OPEN_TAG: "On"
         PHP_DISPLAY_ERRORS: "On"
         PHP_DISPLAY_STARTUP_ERRORS: "On"
-      command: php artisan reverb:start --debug
+      command: >
+        sh -c "
+        php artisan reverb:start --host=0.0.0.0 --port=8090 --debug
+        "
       ports:
         - "8090:8090"
       volumes:
         - ".:/var/www/app/"
       networks:
         - local
+      depends_on:
+        - php
+        - redis
 
     queue-worker:
       env_file:

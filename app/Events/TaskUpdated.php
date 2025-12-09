@@ -2,9 +2,9 @@
 
 namespace App\Events;
 
-use App\Models\Task;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -16,15 +16,15 @@ class TaskUpdated implements ShouldBroadcast
     public $task;
     public $userId;
 
-    public function __construct(Task $task, $userId = null)
+    public function __construct($task)
     {
-        $this->task = $task;
-        $this->userId = $userId;
+        $this->title = $task->title;
+        $this->status = $task->status;
+        $this->projectId = $task->project_id;
     }
 
     public function broadcastOn()
     {
-        // Приватний канал для конкретного проекту
         return new PresenceChannel('project.' . $this->task->project_id);
     }
 
@@ -41,10 +41,5 @@ class TaskUpdated implements ShouldBroadcast
             'updated_at' => $this->task->updated_at->toDateTimeString(),
             'user_id' => $this->userId,
         ];
-    }
-
-    public function broadcastAs()
-    {
-        return 'task.updated';
     }
 }
