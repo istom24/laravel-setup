@@ -13,8 +13,9 @@ class TaskUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $task;
-    public $userId;
+    public $title;
+    public $status;
+    public $projectId;
 
     public function __construct($task)
     {
